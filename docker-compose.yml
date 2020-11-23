@@ -1,0 +1,45 @@
+version: "3.8"
+services: 
+    db:
+        image: mysql
+        ports:
+            - 3307:3307
+        environment: 
+            - "MYSQL_ROOT_PASSWORD=root123"
+            - "MYSQL_DATABASE=test"
+            - "MYSQL_USER=test"
+            - "MYSQL_PASSWORD=test123"
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+        
+    rstudio-server:
+        container_name: rstudio-server
+        build:
+            context: latest
+            dockerfile: Dockerfile
+        image: dceoy/rstudio-server:latest
+        ports:
+            - 8787:8787
+        volumes:
+            - rstudio-server-data:/home/rstudio
+        working_dir: /home/rstudio
+        entrypoint:
+            - /usr/lib/rstudio-server/bin/rserver
+        command:
+            - --server-daemonize=0
+            - --server-app-armor-enabled=0
+        depends_on: 
+            - db
+            
+    shiny_app:
+        container_name: shiny_app
+        image: rocker/shiny-verse
+        ports:
+            - "3838:3838"
+        volumes:
+            - ./shinyapps:/srv/shiny-server/
+        depends_on: 
+            - db
+
+volumes:
+    rstudio-server-data:
