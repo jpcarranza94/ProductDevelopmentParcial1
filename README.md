@@ -28,7 +28,7 @@ Se tomo la desición de montar tres contenedores en la misma red con la ayuda de
 
 ```sh
 
-docker exec -i -t uno_parte1_db_1 bash
+docker exec -i -t productdevelopmentparcial1_db_1 bash
 
 cd docker-entrypoint-initdb.d/
 
